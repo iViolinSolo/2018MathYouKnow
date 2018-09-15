@@ -5,6 +5,6 @@
 
 from data.data_reader import DataReader
 
-dr = DataReader()
+dr = DataReader(name='gtd')
 
-dr.df
+dr.df.info()
