@@ -64,7 +64,20 @@ clusters = km.fit_predict(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday',
 print(km.cluster_centroids_)
 
 
-
 import pandas as pd
 df_result = pd.DataFrame(dftarget)
 df_result['CLUSTER'] = clusters.reshape((-1, 1))
+
+
+# print results....
+list_tar = ['200108110012',
+            '200511180002',
+            '200901170021',
+            '201402110015',
+            '201405010071',
+            '201411070002',
+            '201412160041',
+            '201508010015',
+            '201705080012']
+
+m = df_result[df_result.eventid.isin(list_tar)]
