@@ -38,28 +38,49 @@ tar_cols = ['eventid', 'iyear', 'imonth', 'iday',
             'INT_LOG', 'INT_IDEO', 'INT_MISC', 'INT_ANY']
 dftarget = df[tar_cols]
 
-dftarget.fillna({'eventid':0, 'iyear':0, 'imonth':0, 'iday':0,
-            'attacktype1':0, 'success':0, 'suicide':0,
-            'weaptype1':0,
-            'extended':0, 'crit1':0, 'crit2':0, 'crit3':0, 'doubtterr':0., 'multiple':0., 'related':'', 'region':0, 'vicinity':0,
-            'nperps':0, 'nperpcap':0, 'claimed':0, 'compclaim':0,
-            'targtype1':0, 'nkill':0, 'nkillter':0, 'nwound':0,
-            'property':0, 'propextent':0, 'propvalue':0,
-            'ishostkid':0, 'nhostkid':0, 'nhours':0, 'ndays':0, 'ransom':0, 'ransomamt':0, 'hostkidoutcome':0,
-            'INT_LOG':0, 'INT_IDEO':0, 'INT_MISC':0, 'INT_ANY':0}, inplace=True)
-
+dftarget.fillna({'eventid': 0, 'iyear': 0, 'imonth': 0, 'iday': 0,
+                 'attacktype1': 0, 'success': 0, 'suicide': 0,
+                 'weaptype1': 0,
+                 'extended': 0, 'crit1': 0, 'crit2': 0, 'crit3': 0, 'doubtterr': 0., 'multiple': 0., 'related': '',
+                 'region': 0, 'vicinity': 0,
+                 'nperps': 0, 'nperpcap': 0, 'claimed': 0, 'compclaim': 0,
+                 'targtype1': 0, 'nkill': 0, 'nkillter': 0, 'nwound': 0,
+                 'property': 0, 'propextent': 0, 'propvalue': 0,
+                 'ishostkid': 0, 'nhostkid': 0, 'nhours': 0, 'ndays': 0, 'ransom': 0, 'ransomamt': 0,
+                 'hostkidoutcome': 0,
+                 'INT_LOG': 0, 'INT_IDEO': 0, 'INT_MISC': 0, 'INT_ANY': 0}, inplace=True)
 
 from kmodes.kprototypes import KPrototypes
 
-kproto = KPrototypes(n_clusters=5, init='Huang', n_init=10, verbose=2)
-clusters = kproto.fit_predict(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1), categorical=[0, 1, 2,
-                                                                                                          3,
-                                                                                                          4, 5, 6, 7, 8, 9, 10, 11,
-                                                                                                          14, 15,
-                                                                                                          16,
-                                                                                                          20, 21,
-                                                                                                          23, 27, 29,
-                                                                                                          30, 31, 32, 33])
+# categorical=[0, 1, 2,
+#               3,
+#               4, 5, 6, 7, 8, 9, 10, 11,
+#               14, 15,
+#               16,
+#               20, 21,
+#               23, 27, 29,
+#               30, 31, 32, 33])
+kproto = KPrototypes(n_clusters=5, init='Huang', n_init=1, verbose=2)
+_ = kproto.fit(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1), categorical=[0, 1, 2,
+                                                                                                      3,
+                                                                                                      4, 5, 6, 7, 8, 9,
+                                                                                                      10, 11,
+                                                                                                      14, 15,
+                                                                                                      16,
+                                                                                                      20, 21,
+                                                                                                      23, 27, 29,
+                                                                                                      30, 31, 32, 33])
+
+print('Begin preditct...')
+clusters = kproto.predict(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1),
+                          categorical=[0, 1, 2,
+                                       3,
+                                       4, 5, 6, 7, 8, 9, 10, 11,
+                                       14, 15,
+                                       16,
+                                       20, 21,
+                                       23, 27, 29,
+                                       30, 31, 32, 33])
 
 # Print cluster centroids of the trained model.
 print(kproto.cluster_centroids_)
@@ -67,13 +88,13 @@ print(kproto.cluster_centroids_)
 print(kproto.cost_)
 print(kproto.n_iter_)
 
-
 import pandas as pd
+
 df_result = pd.DataFrame(dftarget)
 df_result['CLUSTER'] = clusters.reshape((-1, 1))
 import time
-df_result.to_csv("./../data/kprot_%s.csv" % str(time.time()))
 
+df_result.to_csv("./../data/kprot_%s.csv" % str(time.time()))
 
 # print results....
 list_tar = ['200108110012',
