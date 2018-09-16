@@ -11,10 +11,14 @@ class DataReader:
     def __init__(self, name=None):
         self.df = self.read_data('gtd' if not name else name)
 
-    def read_data(self, name):
+    @staticmethod
+    def read_data(name) -> pd.DataFrame:
         if os.path.exists('%s.pkl' % name):
             return pd.read_pickle('%s.pkl' % name)
         elif os.path.exists('%s.xlsx' % name):
             _df = pd.read_excel('%s.xlsx' % name)
             pd.to_pickle(_df, '%s.pkl' % name)
             return _df
+        else:
+            return None
+
