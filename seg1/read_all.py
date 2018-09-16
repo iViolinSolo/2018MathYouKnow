@@ -55,9 +55,16 @@ from kmodes.kmodes import KModes
 
 km = KModes(n_clusters=5, init='Huang', n_init=5, verbose=1)
 
-clusters = km.fit_predict(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1))
+clusters = km.fit_predict(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday',
+                                         'related',
+                                         'nperps', 'nperpcap', 'nkill', 'nkillter', 'propvalue',
+                                         'nwound', 'nhostkid', 'nhours', 'ndays', 'ransomamt'], axis=1))
 
 # Print the cluster centroids
 print(km.cluster_centroids_)
 
-dftarget['']
+
+
+import pandas as pd
+df_result = pd.DataFrame(dftarget)
+df_result['CLUSTER'] = clusters.reshape((-1, 1))
