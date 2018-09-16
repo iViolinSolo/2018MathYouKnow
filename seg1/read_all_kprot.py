@@ -71,6 +71,8 @@ print(kproto.n_iter_)
 import pandas as pd
 df_result = pd.DataFrame(dftarget)
 df_result['CLUSTER'] = clusters.reshape((-1, 1))
+import time
+df_result.to_csv("./../data/kprot_%s.csv" % str(time.time()))
 
 
 # print results....

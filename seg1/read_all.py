@@ -67,6 +67,8 @@ print(km.cluster_centroids_)
 import pandas as pd
 df_result = pd.DataFrame(dftarget)
 df_result['CLUSTER'] = clusters.reshape((-1, 1))
+import time
+df_result.to_csv("./../data/kmodes_%s.csv" % str(time.time()))
 
 
 # print results....
