@@ -50,6 +50,26 @@ dftarget.fillna({'eventid': 0, 'iyear': 0, 'imonth': 0, 'iday': 0,
                  'hostkidoutcome': 0,
                  'INT_LOG': 0, 'INT_IDEO': 0, 'INT_MISC': 0, 'INT_ANY': 0}, inplace=True)
 
+# generate data from original DS
+tar_numerical_cols = [
+    'nperps', 'nperpcap',
+    'nkill', 'nkillter', 'nwound',
+    'propvalue',
+    'nhostkid', 'nhours', 'ndays', 'ransomamt', 'hostkidoutcome']
+
+tar_categoricals_cols_idx = [0, 1, 2,
+                             3,
+                             4, 5, 6, 7, 8, 9, 10, 11,
+                             14, 15,
+                             16,
+                             20, 21,
+                             23, 27, 29,
+                             30, 31, 32, 33]
+
+df_X = dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
+df_X[tar_numerical_cols] = (df_X[tar_numerical_cols] - df_X[tar_numerical_cols].min())/(df_X[tar_numerical_cols].max() - df_X[tar_numerical_cols].min())
+X = df_X.values
+
 from kmodes.kprototypes import KPrototypes
 
 # categorical=[0, 1, 2,
@@ -61,26 +81,10 @@ from kmodes.kprototypes import KPrototypes
 #               23, 27, 29,
 #               30, 31, 32, 33])
 kproto = KPrototypes(n_clusters=5, init='Huang', n_init=1, verbose=2)
-_ = kproto.fit(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1), categorical=[0, 1, 2,
-                                                                                                      3,
-                                                                                                      4, 5, 6, 7, 8, 9,
-                                                                                                      10, 11,
-                                                                                                      14, 15,
-                                                                                                      16,
-                                                                                                      20, 21,
-                                                                                                      23, 27, 29,
-                                                                                                      30, 31, 32, 33])
+_ = kproto.fit(X, categorical=tar_categoricals_cols_idx)
 
 print('Begin preditct...')
-clusters = kproto.predict(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1),
-                          categorical=[0, 1, 2,
-                                       3,
-                                       4, 5, 6, 7, 8, 9, 10, 11,
-                                       14, 15,
-                                       16,
-                                       20, 21,
-                                       23, 27, 29,
-                                       30, 31, 32, 33])
+clusters = kproto.predict(X, categorical=tar_categoricals_cols_idx)
 
 # Print cluster centroids of the trained model.
 print(kproto.cluster_centroids_)
