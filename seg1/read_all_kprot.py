@@ -55,7 +55,7 @@ tar_numerical_cols = [
     'nperps', 'nperpcap',
     'nkill', 'nkillter', 'nwound',
     'propvalue',
-    'nhostkid', 'nhours', 'ndays', 'ransomamt', 'hostkidoutcome']
+    'nhostkid', 'nhours', 'ndays', 'ransomamt']
 
 tar_categoricals_cols_idx = [0, 1, 2,
                              3,
@@ -67,7 +67,9 @@ tar_categoricals_cols_idx = [0, 1, 2,
                              30, 31, 32, 33]
 
 df_X = dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
-df_X[tar_numerical_cols] = (df_X[tar_numerical_cols] - df_X[tar_numerical_cols].min())/(df_X[tar_numerical_cols].max() - df_X[tar_numerical_cols].min())
+numerical_min = df_X[tar_numerical_cols].min()
+numerical_max = df_X[tar_numerical_cols].max()
+df_X[tar_numerical_cols] = (df_X[tar_numerical_cols] - numerical_min)/(numerical_max - numerical_min)
 X = df_X.values
 
 from kmodes.kprototypes import KPrototypes
@@ -88,6 +90,11 @@ clusters = kproto.predict(X, categorical=tar_categoricals_cols_idx)
 
 # Print cluster centroids of the trained model.
 print(kproto.cluster_centroids_)
+# do reverse version of cluster center
+numerical_vars_centers = kproto.cluster_centroids_[0]
+numerical_vars_centers = {'cluster_centroids_{%d}' % i: numerical_vars_centers[i] * (numerical_max - numerical_min) + numerical_min for i in range(numerical_vars_centers.shape[0])}
+print(numerical_vars_centers)
+
 # Print training statistics
 print(kproto.cost_)
 print(kproto.n_iter_)
