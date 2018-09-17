@@ -82,7 +82,7 @@ from kmodes.kprototypes import KPrototypes
 #               20, 21,
 #               23, 27, 29,
 #               30, 31, 32, 33])
-kproto = KPrototypes(n_clusters=5, init='Huang', n_init=1, verbose=2)
+kproto = KPrototypes(n_clusters=5, init='Huang', n_init=10, verbose=2)
 _ = kproto.fit(X, categorical=tar_categoricals_cols_idx)
 
 print('Begin preditct...')
@@ -92,20 +92,27 @@ clusters = kproto.predict(X, categorical=tar_categoricals_cols_idx)
 print(kproto.cluster_centroids_)
 # do reverse version of cluster center
 numerical_vars_centers = kproto.cluster_centroids_[0]
-numerical_vars_centers = {'cluster_centroids_{%d}' % i: numerical_vars_centers[i] * (numerical_max - numerical_min) + numerical_min for i in range(numerical_vars_centers.shape[0])}
+numerical_vars_centers = [numerical_vars_centers[i] * (numerical_max - numerical_min) + numerical_min for i in range(numerical_vars_centers.shape[0])]
+
+
+# save centers information..
+import pandas as pd
+import time
+stime = time.time()
+
+df_numer_res = pd.DataFrame(numerical_vars_centers)
+df_numer_res.to_csv("./../data/kprot_centers_%s.csv" % str(stime))
 print(numerical_vars_centers)
 
 # Print training statistics
 print(kproto.cost_)
 print(kproto.n_iter_)
 
-import pandas as pd
-
 df_result = pd.DataFrame(dftarget)
 df_result['CLUSTER'] = clusters.reshape((-1, 1))
-import time
 
-df_result.to_csv("./../data/kprot_%s.csv" % str(time.time()))
+# save all results information..
+df_result.to_csv("./../data/kprot_%s.csv" % str(stime))
 
 # print results....
 list_tar = ['200108110012',
