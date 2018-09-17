@@ -63,8 +63,15 @@ allX = df_needed.drop(['gname'], axis=1)
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-x_train, x_test, y_train, y_test = train_test_split(allX.values, allY.values, test_size=0.25, random_state=4)
+SEED = 4
+x_train, x_test, y_train, y_test = train_test_split(allX.values, allY.values, test_size=0.25, random_state=SEED)
 
 feat_labels = df.columns[1:]
-forest = RandomForestClassifier(n_estimators=10000, random_state=0, n_jobs=-1)
+forest = RandomForestClassifier(n_estimators=10000, random_state=SEED, n_jobs=-1)
 forest.fit(x_train, y_train)
+
+
+importances = forest.feature_importances_
+indices = np.argsort(importances)[::-1]
+for f in range(x_train.shape[1]):
+    print("%2d) %-*s %f" % (f + 1, 30, feat_labels[indices[f]], importances[indices[f]]))
