@@ -3,7 +3,6 @@
 # Author: violinsolo
 # Created on 17/09/2018
 
-
 from data.data_reader import DataReader
 
 dr = DataReader(name='./../data/gtd')
@@ -27,25 +26,104 @@ all_cols = ['eventid', 'iyear', 'imonth', 'iday', 'approxdate', 'extended', 'res
             'divert', 'kidhijcountry', 'ransom', 'ransomamt', 'ransomamtus', 'ransompaid', 'ransompaidus', 'ransomnote',
             'hostkidoutcome', 'hostkidoutcome_txt', 'nreleased', 'addnotes', 'scite1', 'scite2', 'scite3', 'dbsource',
             'INT_LOG', 'INT_IDEO', 'INT_MISC', 'INT_ANY', 'related']
+
+# get all data here.
+
+target_col_name = [
+    'eventid', 'iyear', 'imonth', 'iday', 'extended',
+    'crit1', 'crit2', 'crit3', 'doubtterr', 'alternative', 'multiple',
+    'country', 'region', 'provstate', 'city', 'specificity', 'vicinity',
+    'attacktype1', 'attacktype2', 'attacktype3', 'success', 'suicide',
+    'weaptype1', 'weapsubtype1', 'weaptype2', 'weapsubtype2', 'weaptype3', 'weapsubtype3', 'weaptype4', 'weapsubtype4',
+    'targtype1', 'targsubtype1', 'targtype2', 'targsubtype2', 'targtype3', 'targsubtype3',
+    'gname', 'nperps', 'nperpcap', 'claimed', 'claimmode', 'compclaim',
+    'nkill', 'nkillus', 'nkillter', 'nwound', 'nwoundus', 'nwoundte', 'property', 'propextent', 'propvalue', 'ishostkid', 'nhostkid', 'nhostkidus', 'nhours', 'ndays', 'ransom', 'hostkidoutcome', 'nreleased',
+    'INT_LOG', 'INT_IDEO', 'INT_MISC', 'INT_ANY', 'related'
+]
+df_target = df[target_col_name]
+
+# fill nas
+df_target.fillna({
+    'eventid': 0, 'iyear': 0, 'imonth': 0, 'iday': 0, 'extended': 0,
+    'crit1': 0, 'crit2': 0, 'crit3': 0, 'doubtterr': 0., 'alternative': 0., 'multiple': 0.,
+    'country': 0, 'region': 0, 'provstate': '', 'city': '', 'specificity': 0., 'vicinity': 0,
+    'attacktype1': 9, 'attacktype2': 9, 'attacktype3': 9, 'success': 0, 'suicide': 0,
+    'weaptype1': 13, 'weapsubtype1': 27, 'weaptype2': 13, 'weapsubtype2': 27, 'weaptype3': 13, 'weapsubtype3': 27, 'weaptype4': 13, 'weapsubtype4': 27,
+    'targtype1': 20, 'targsubtype1': 0, 'targtype2': 20, 'targsubtype2': 0, 'targtype3': 20, 'targsubtype3': 0,
+    'gname': 'Unknown', 'nperps': 0, 'nperpcap': 0, 'claimed': 0, 'claimmode': 10, 'compclaim': 0,
+    'nkill': 0, 'nkillus': 0, 'nkillter': 0, 'nwound': 0, 'nwoundus': 0, 'nwoundte': 0, 'property': -9, 'propextent': 4, 'propvalue': -99, 'ishostkid': 0, 'nhostkid': 0, 'nhostkidus': 0, 'nhours': 0, 'ndays': -99, 'ransom': 0, 'hostkidoutcome': 0, 'nreleased': 0,
+    'INT_LOG': 0, 'INT_IDEO': 0, 'INT_MISC': 0, 'INT_ANY': 0, 'related': ''
+
+}, inplace=True)
+
+
+# do pre-process
+df_needed = df_target.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
+df_needed = df_needed[df_needed['gname'] != 'Unknown']
+
+# do labelencoding
+from sklearn import preprocessing
+
+# encode gname
+le_gname = preprocessing.LabelEncoder()
+en_gname = le_gname.fit_transform(df_needed['gname'])
+df_needed['gname'] = en_gname.reshape((-1, 1))
+
+# encode provstate
+le_provstate = preprocessing.LabelEncoder()
+en_provstate = le_provstate.fit_transform(df_needed['provstate'])
+df_needed['provstate'] = en_provstate.reshape((-1, 1))
+
+# encode city
+le_city = preprocessing.LabelEncoder()
+en_city = le_city.fit_transform(df_needed['city'])
+df_needed['city'] = en_city.reshape((-1, 1))
+
+
+# 'location',
+#    'summary',   'alternative_txt',
 #
-# tar_cols = ['eventid', 'iyear', 'imonth', 'iday',
-#             'attacktype1', 'success', 'suicide',
-#             'weaptype1',
-#             'extended', 'crit1', 'crit2', 'crit3', 'doubtterr', 'multiple', 'related', 'region', 'vicinity',
-#             'nperps', 'nperpcap', 'claimed', 'compclaim',
-#             'targtype1', 'nkill', 'nkillter', 'nwound',
-#             'property', 'propextent', 'propvalue',
-#             'ishostkid', 'nhostkid', 'nhours', 'ndays', 'ransom', 'ransomamt', 'hostkidoutcome',
-#             'INT_LOG', 'INT_IDEO', 'INT_MISC', 'INT_ANY']
-# dftarget = df[tar_cols]
-#
-# dftarget.fillna({'eventid':0, 'iyear':0, 'imonth':0, 'iday':0,
-#             'attacktype1':0, 'success':0, 'suicide':0,
-#             'weaptype1':0,
-#             'extended':0, 'crit1':0, 'crit2':0, 'crit3':0, 'doubtterr':0., 'multiple':0., 'related':'', 'region':0, 'vicinity':0,
-#             'nperps':0, 'nperpcap':0, 'claimed':0, 'compclaim':0,
-#             'targtype1':0, 'nkill':0, 'nkillter':0, 'nwound':0,
-#             'property':0, 'propextent':0, 'propvalue':0,
-#             'ishostkid':0, 'nhostkid':0, 'nhours':0, 'ndays':0, 'ransom':0, 'ransomamt':0, 'hostkidoutcome':0,
-#             'INT_LOG':0, 'INT_IDEO':0, 'INT_MISC':0, 'INT_ANY':0}, inplace=True)
-#
+#      'gsubname', 'gname2', 'gsubname2', 'gname3',
+#    'gsubname3', 'motive', 'guncertain1', 'guncertain2', 'guncertain3', 'individual',
+#     'claimmode_txt', 'claim2', 'claimmode2', 'claimmode2_txt', 'claim3', 'claimmode3',
+#    'claimmode3_txt',
+#    'weapdetail',
+#    'propextent_txt',  'propcomment',
+#    'divert', 'kidhijcountry',  'ransomamt', 'ransomamtus', 'ransompaid', 'ransompaidus', 'ransomnote',
+#     'hostkidoutcome_txt',  'addnotes', 'scite1', 'scite2', 'scite3', 'dbsource',
+
+
+# Filter all unknown gnames...
+import pandas as pd
+import numpy as np
+
+
+allY = df_needed['gname']
+allX = df_needed.drop(['gname'], axis=1)
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+print("====> Begin split...")
+SEED = 4
+x_train, x_test, y_train, y_test = train_test_split(allX.values, allY.values, test_size=0.25, random_state=SEED)
+print("====> Split finished...")
+
+feat_labels = allX.columns[0:]
+forest = RandomForestClassifier(n_estimators=10000, random_state=SEED, n_jobs=-1, verbose=2)
+print("====> Training begin...")
+forest.fit(x_train, y_train)
+print("====> Training Finished...")
+
+
+
+importances = forest.feature_importances_
+indices = np.argsort(importances)[::-1]
+for f in range(x_train.shape[1]):
+    print("%2d) %-*s %f" % (f + 1, 30, feat_labels[indices[f]], importances[indices[f]]))
+
+
+threshold = 0.15
+x_selected = x_train[:, importances > threshold]
+print(x_selected.shape)
+
