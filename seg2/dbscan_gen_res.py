@@ -143,8 +143,11 @@ import time
 
 #DBSCAN
 t0 = time.time()
-dbscan = DBSCAN(eps=100, min_samples=6)
+dbscan = DBSCAN(eps=10, min_samples=6)
 dbscan.fit(x_selected_fea)
+core_samples_mask = np.zeros_like(dbscan.labels_, dtype=bool)
+core_samples_mask[dbscan.core_sample_indices_] = True
+labels = dbscan.labels_
 y_predict = dbscan.labels_
 t = time.time()-t0
 
@@ -152,3 +155,9 @@ print('time : %f'%t)
 
 m = y_predict.reshape((-1, 1))
 print(len([x for x in m if x == -1]))
+
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+print('Estimated number of clusters: %d' % n_clusters_)
