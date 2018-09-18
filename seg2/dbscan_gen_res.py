@@ -143,7 +143,7 @@ import time
 
 #DBSCAN
 t0 = time.time()
-dbscan = DBSCAN(eps=10, min_samples=6)
+dbscan = DBSCAN(eps=100, min_samples=3)
 dbscan.fit(x_selected_fea)
 core_samples_mask = np.zeros_like(dbscan.labels_, dtype=bool)
 core_samples_mask[dbscan.core_sample_indices_] = True
