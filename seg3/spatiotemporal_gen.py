@@ -16,6 +16,8 @@ df_plain = DataReader(name='./../data/gtd').df
 
 df_plain['CLUSTER_SCORE'] = df['CLUSTER_SCORE']
 df_tar = df_plain[['eventid', 'iyear', 'imonth', 'iday', 'region', 'provstate', 'latitude', 'longitude', 'CLUSTER_SCORE']]
+df_tar = df_tar[(df_tar['iyear']==2015)|(df_tar['iyear']==2016)|(df_tar['iyear']==2017)]
+df_tar = df_tar[~(df_tar['longitude'].isna | df_tar['latitude'].isna)]
 
 _geo = df_tar[['eventid', 'latitude', 'longitude']].values
 _data = df_tar[['eventid', 'CLUSTER_SCORE']].values
@@ -28,12 +30,12 @@ for t_geo, t_data in zip(_geo, _data):
     y_geo[str(int(t_geo[0]))] = [t_geo[1], t_geo[2]]
 
 
-print(y_data)
-print(y_geo)
-
-import json
-with open('./../data/seg3/data.json', 'w+') as fw:
-    fw.write(json.dumps(y_data))
-
-with open('./../data/seg3/geo.json', 'w+') as fw:
-    fw.write(json.dumps(y_geo))
+# print(y_data)
+# print(y_geo)
+#
+# import json
+# with open('./../data/seg3/data.json', 'w+') as fw:
+#     fw.write(json.dumps(y_data))
+#
+# with open('./../data/seg3/geo.json', 'w+') as fw:
+#     fw.write(json.dumps(y_geo))
