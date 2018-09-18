@@ -58,8 +58,9 @@ df_target.fillna({
 
 
 # do pre-process
-df_needed = df_target.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
-df_needed = df_needed[df_needed['gname'] != 'Unknown']
+df_needed_ori = df_target.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
+df_needed = df_needed_ori[df_needed_ori['gname'] != 'Unknown']
+df_needed_unk = df_needed_ori[df_needed_ori['gname'] == 'Unknown']
 
 # do labelencoding
 from sklearn import preprocessing
@@ -78,19 +79,6 @@ df_needed['provstate'] = en_provstate.reshape((-1, 1))
 le_city = preprocessing.LabelEncoder()
 en_city = le_city.fit_transform(df_needed['city'])
 df_needed['city'] = en_city.reshape((-1, 1))
-
-
-# 'location',
-#    'summary',   'alternative_txt',
-#
-#      'gsubname', 'gname2', 'gsubname2', 'gname3',
-#    'gsubname3', 'motive', 'guncertain1', 'guncertain2', 'guncertain3', 'individual',
-#     'claimmode_txt', 'claim2', 'claimmode2', 'claimmode2_txt', 'claim3', 'claimmode3',
-#    'claimmode3_txt',
-#    'weapdetail',
-#    'propextent_txt',  'propcomment',
-#    'divert', 'kidhijcountry',  'ransomamt', 'ransomamtus', 'ransompaid', 'ransompaidus', 'ransomnote',
-#     'hostkidoutcome_txt',  'addnotes', 'scite1', 'scite2', 'scite3', 'dbsource',
 
 
 # Filter all unknown gnames...
@@ -112,7 +100,7 @@ print("====> Split finished...")
 feat_labels = allX.columns[0:]
 forest = RandomForestClassifier(n_estimators=10000, random_state=SEED, n_jobs=-1, verbose=2)
 print("====> Training begin...")
-forest.fit(x_train, y_train)
+# forest.fit(x_train, y_train)
 print("====> Training Finished...")
 
 
