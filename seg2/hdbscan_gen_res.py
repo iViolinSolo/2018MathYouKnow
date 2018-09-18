@@ -194,3 +194,53 @@ df_hdbscan_final_sub.to_csv('./../data/dbscan final/dbscan-ori-trainwithres-subm
 x = pd.Series(df_q1_res_tar_slice.groupby(by=['CODE_NAME']).sum()['CLUSTER_SCORE'])
 x = x.sort_values(ascending=False)
 x.to_csv('./../data/dbscan final/dbscan-dangerlevel-sum-codename-submission02.csv')
+
+# DOING distance ....
+all_five_codename = x.index[1:6].tolist()
+exemplars_ = clusterer.exemplars_
+best_top_5_in_rank5 = np.asarray([exemplars_[i][0] for i in all_five_codename])
+
+# 2017 needed to predicts
+df_predict_index_target = [
+    201701090031,
+    201702210037,
+    201703120023,
+    201705050009,
+    201705050010,
+    201707010028,
+    201707020006,
+    201708110018,
+    201711010006,
+    201712010003
+]
+
+df_predict_from_source = df_target[df_target['eventid'].isin(df_predict_index_target)]
+
+
+df_predict_selected_fea = df_predict_from_source[all_tar_idxs]
+# x_selected_fea = df_dbscan_train_real[all_tar_idxs]
+
+# encode provstate
+le_pr_provstate = preprocessing.LabelEncoder()
+en_pr_provstate = le_pr_provstate.fit_transform(df_predict_selected_fea['provstate'])
+df_predict_selected_fea['provstate'] = en_pr_provstate.reshape((-1, 1))
+
+# encode city
+le_pr_city = preprocessing.LabelEncoder()
+en_pr_city = le_pr_city.fit_transform(df_predict_selected_fea['city'])
+df_predict_selected_fea['city'] = en_pr_city.reshape((-1, 1))
+
+
+def calEuclideanDistance(vec1, vec2):
+    dist = np.sqrt(np.sum(np.square(vec1 - vec2)))
+    return dist
+
+
+# calculate distance
+all_dists = np.zeros((len(df_predict_index_target), len(all_five_codename)))
+for i in range(len(df_predict_index_target)):
+    for j in range(len(all_five_codename)):
+        dist = calEuclideanDistance(df_predict_selected_fea.values[i], best_top_5_in_rank5[j])
+        all_dists[i][j] = dist
+
+print(all_dists)
