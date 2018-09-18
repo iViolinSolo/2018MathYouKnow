@@ -137,3 +137,18 @@ print(x_selected_fea.shape)
 
 
 # NOW Doing DBSCAN
+from sklearn.cluster import DBSCAN
+import time
+
+
+#DBSCAN
+t0 = time.time()
+dbscan = DBSCAN(eps=100, min_samples=6)
+dbscan.fit(x_selected_fea)
+y_predict = dbscan.labels_
+t = time.time()-t0
+
+print('time : %f'%t)
+
+m = y_predict.reshape((-1, 1))
+print(len([x for x in m if x == -1]))
