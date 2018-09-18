@@ -104,12 +104,17 @@ allX = df_needed.drop(['gname'], axis=1)
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
+print("====> Begin split...")
 SEED = 4
 x_train, x_test, y_train, y_test = train_test_split(allX.values, allY.values, test_size=0.25, random_state=SEED)
+print("====> Split finished...")
 
-feat_labels = df_needed.columns[1:]
+feat_labels = allX.columns[0:]
 forest = RandomForestClassifier(n_estimators=10000, random_state=SEED, n_jobs=-1, verbose=2)
+print("====> Training begin...")
 forest.fit(x_train, y_train)
+print("====> Training Finished...")
+
 
 
 importances = forest.feature_importances_
