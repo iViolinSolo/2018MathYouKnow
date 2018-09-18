@@ -121,7 +121,7 @@ for f in range(x_train.shape[1]):
     print("%2d) %-*s %f" % (f + 1, 30, feat_labels[indices[f]], importances[indices[f]]))
 
 
-threshold = 0.003193
+threshold = 0.005
 x_selected = x_train[:, importances > threshold]
 print(x_selected.shape)
 
