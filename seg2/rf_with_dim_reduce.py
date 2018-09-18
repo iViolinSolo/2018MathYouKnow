@@ -40,7 +40,24 @@ target_col_name = [
     'nkill', 'nkillus', 'nkillter', 'nwound', 'nwoundus', 'nwoundte', 'property', 'propextent', 'propvalue', 'ishostkid', 'nhostkid', 'nhostkidus', 'nhours', 'ndays', 'ransom', 'hostkidoutcome', 'nreleased',
     'INT_LOG', 'INT_IDEO', 'INT_MISC', 'INT_ANY', 'related'
 ]
-df_needed = df[target_col_name]
+df_target = df[target_col_name]
+
+df_target.fillna({
+    'eventid': 0, 'iyear': 0, 'imonth': 0, 'iday': 0, 'extended': 0,
+    'crit1': 0, 'crit2': 0, 'crit3': 0, 'doubtterr': 0., 'alternative': 0., 'multiple': 0.,
+    'country': 0, 'region': 0, 'provstate': '', 'city': '', 'specificity': 0., 'vicinity': 0,
+    'attacktype1': 9, 'attacktype2': 9, 'attacktype3': 9, 'success': 0, 'suicide': 0,
+    'weaptype1': 13, 'weapsubtype1': 27, 'weaptype2': 13, 'weapsubtype2': 27, 'weaptype3': 13, 'weapsubtype3': 27, 'weaptype4': 13, 'weapsubtype4': 27,
+    'targtype1': 20, 'targsubtype1': 0, 'targtype2': 20, 'targsubtype2': 0, 'targtype3': 20, 'targsubtype3': 0,
+    'gname': 'Unknown', 'nperps': 0, 'nperpcap': 0, 'claimed': 0, 'claimmode': 10, 'compclaim': 0,
+    'nkill': 0, 'nkillus': 0, 'nkillter': 0, 'nwound': 0, 'nwoundus': 0, 'nwoundte': 0, 'property': -9, 'propextent': 4, 'propvalue': -99, 'ishostkid': 0, 'nhostkid': 0, 'nhostkidus': 0, 'nhours': 0, 'ndays': -99, 'ransom': 0, 'hostkidoutcome': 0, 'nreleased': 0,
+    'INT_LOG': 0, 'INT_IDEO': 0, 'INT_MISC': 0, 'INT_ANY': 0, 'related': ''
+
+}, inplace=True)
+
+
+# do pre-process
+df_needed = df_target.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
 
 # 'location',
 #    'summary',   'alternative_txt',
