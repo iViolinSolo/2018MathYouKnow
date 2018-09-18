@@ -53,7 +53,7 @@ dftarget.fillna({'eventid':0, 'iyear':0, 'imonth':0, 'iday':0,
 import numpy as np
 from kmodes.kmodes import KModes
 
-km = KModes(n_clusters=5, init='Huang', n_init=5, verbose=1)
+km = KModes(n_clusters=5, init='Huang', n_init=1, verbose=1)
 
 clusters = km.fit_predict(dftarget.drop(['eventid', 'iyear', 'imonth', 'iday',
                                          'related',

@@ -67,6 +67,8 @@ tar_categoricals_cols_idx = [0, 1, 2,
                              30, 31, 32, 33]
 
 df_X = dftarget.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
+for _col in tar_numerical_cols:
+    df.loc[df_X[_col] < 0, _col] = 0
 numerical_min = df_X[tar_numerical_cols].min()
 numerical_max = df_X[tar_numerical_cols].max()
 df_X[tar_numerical_cols] = (df_X[tar_numerical_cols] - numerical_min)/(numerical_max - numerical_min)
