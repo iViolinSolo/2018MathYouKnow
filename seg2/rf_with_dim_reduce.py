@@ -61,11 +61,12 @@ df_target.fillna({
 df_needed = df_target.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
 df_needed = df_needed[df_needed['gname'] != 'Unknown']
 
-# # do labelencoding
-# from sklearn import preprocessing
-#
-# le_gname = preprocessing.LabelEncoder()
-# le_gname.fit_transform(df_needed)
+# do labelencoding
+from sklearn import preprocessing
+
+le_gname = preprocessing.LabelEncoder()
+en_gname = le_gname.fit_transform(df_needed['gname'])
+df_needed['gname'] = en_gname.reshape((-1, 1))
 
 
 # 'location',
