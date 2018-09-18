@@ -64,7 +64,7 @@ df_17_ori = df_target.loc[df_target['iyear'] == 2017, :].drop(['eventid', 'iyear
 df_needed = df_needed_ori[df_needed_ori['gname'] != 'Unknown']
 df_needed_unk = df_needed_ori[df_needed_ori['gname'] == 'Unknown']
 df_dbscan_train_unk = df_1516_ori[(df_1516_ori['gname'] == 'Unknown') & (df_1516_ori['claimed'] == 0)]
-df_dbscan_train_real = df_dbscan_train_unk.drop(['gname', 'claimed'], axis=1)
+df_dbscan_train_real = df_dbscan_train_unk.drop(['gname'], axis=1)
 
 # do labelencoding
 from sklearn import preprocessing
@@ -78,15 +78,17 @@ df_needed['gname'] = en_gname.reshape((-1, 1))
 le_provstate = preprocessing.LabelEncoder()
 en_provstate = le_provstate.fit_transform(df_needed['provstate'])
 df_needed['provstate'] = en_provstate.reshape((-1, 1))
-en_provstate = le_provstate.transform(df_dbscan_train_real['provstate'])
-df_dbscan_train_real['provstate'] = en_provstate.reshape((-1, 1))
+le_ds_provstate = preprocessing.LabelEncoder()
+en_ds_provstate = le_ds_provstate.fit_transform(df_dbscan_train_real['provstate'])
+df_dbscan_train_real['provstate'] = en_ds_provstate.reshape((-1, 1))
 
 # encode city
 le_city = preprocessing.LabelEncoder()
 en_city = le_city.fit_transform(df_needed['city'])
 df_needed['city'] = en_city.reshape((-1, 1))
-en_city = le_city.transform(df_dbscan_train_real['city'])
-df_dbscan_train_real['city'] = en_city.reshape((-1, 1))
+le_ds_city = preprocessing.LabelEncoder()
+en_ds_city = le_ds_city.fit_transform(df_dbscan_train_real['city'])
+df_dbscan_train_real['city'] = en_ds_city.reshape((-1, 1))
 
 
 # Filter all unknown gnames...
@@ -108,7 +110,7 @@ print("====> Split finished...")
 feat_labels = allX.columns[0:]
 forest = RandomForestClassifier(n_estimators=1000, random_state=SEED, n_jobs=-1, verbose=2)
 print("====> Training begin...")
-# forest.fit(x_train, y_train)
+forest.fit(x_train, y_train)
 print("====> Training Finished...")
 
 
@@ -123,3 +125,11 @@ threshold = 0.003193
 x_selected = x_train[:, importances > threshold]
 print(x_selected.shape)
 
+for f in range(x_train.shape[1]):
+    print("%2d) %-*s %f" % (f + 1, 30, feat_labels[indices[f]], importances[indices[f]]))
+
+x_selected_fea = df_dbscan_train_real[:, importances > threshold]
+print(x_selected_fea.shape)
+
+
+# NOW Doing DBSCAN
