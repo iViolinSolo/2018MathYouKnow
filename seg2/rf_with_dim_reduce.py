@@ -42,6 +42,7 @@ target_col_name = [
 ]
 df_target = df[target_col_name]
 
+# fill nas
 df_target.fillna({
     'eventid': 0, 'iyear': 0, 'imonth': 0, 'iday': 0, 'extended': 0,
     'crit1': 0, 'crit2': 0, 'crit3': 0, 'doubtterr': 0., 'alternative': 0., 'multiple': 0.,
@@ -58,6 +59,14 @@ df_target.fillna({
 
 # do pre-process
 df_needed = df_target.drop(['eventid', 'iyear', 'imonth', 'iday', 'related'], axis=1)
+df_needed = df_needed[df_needed['gname'] != 'Unknown']
+
+# # do labelencoding
+# from sklearn import preprocessing
+#
+# le_gname = preprocessing.LabelEncoder()
+# le_gname.fit_transform(df_needed)
+
 
 # 'location',
 #    'summary',   'alternative_txt',
