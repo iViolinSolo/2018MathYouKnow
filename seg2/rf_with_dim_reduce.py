@@ -64,9 +64,20 @@ df_needed = df_needed[df_needed['gname'] != 'Unknown']
 # do labelencoding
 from sklearn import preprocessing
 
+# encode gname
 le_gname = preprocessing.LabelEncoder()
 en_gname = le_gname.fit_transform(df_needed['gname'])
 df_needed['gname'] = en_gname.reshape((-1, 1))
+
+# encode provstate
+le_provstate = preprocessing.LabelEncoder()
+en_provstate = le_provstate.fit_transform(df_needed['provstate'])
+df_needed['provstate'] = en_provstate.reshape((-1, 1))
+
+# encode city
+le_city = preprocessing.LabelEncoder()
+en_city = le_city.fit_transform(df_needed['city'])
+df_needed['city'] = en_city.reshape((-1, 1))
 
 
 # 'location',
