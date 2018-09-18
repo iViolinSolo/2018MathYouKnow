@@ -108,7 +108,7 @@ SEED = 4
 x_train, x_test, y_train, y_test = train_test_split(allX.values, allY.values, test_size=0.25, random_state=SEED)
 
 feat_labels = df_needed.columns[1:]
-forest = RandomForestClassifier(n_estimators=10000, random_state=SEED, n_jobs=-1)
+forest = RandomForestClassifier(n_estimators=10000, random_state=SEED, n_jobs=-1, verbose=2)
 forest.fit(x_train, y_train)
 
 
