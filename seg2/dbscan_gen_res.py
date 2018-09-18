@@ -108,7 +108,7 @@ x_train, x_test, y_train, y_test = train_test_split(allX.values, allY.values, te
 print("====> Split finished...")
 
 feat_labels = allX.columns[0:]
-forest = RandomForestClassifier(n_estimators=1000, random_state=SEED, n_jobs=-1, verbose=2)
+forest = RandomForestClassifier(n_estimators=10, random_state=SEED, n_jobs=-1, verbose=2)
 print("====> Training begin...")
 forest.fit(x_train, y_train)
 print("====> Training Finished...")
@@ -125,10 +125,14 @@ threshold = 0.003193
 x_selected = x_train[:, importances > threshold]
 print(x_selected.shape)
 
+all_tar_idxs = []
 for f in range(x_train.shape[1]):
-    print("%2d) %-*s %f" % (f + 1, 30, feat_labels[indices[f]], importances[indices[f]]))
+    if importances[indices[f]] > threshold:
+        all_tar_idxs.append(feat_labels[indices[f]])
 
-x_selected_fea = df_dbscan_train_real[:, importances > threshold]
+print(all_tar_idxs)
+
+x_selected_fea = df_dbscan_train_real[all_tar_idxs]
 print(x_selected_fea.shape)
 
 
