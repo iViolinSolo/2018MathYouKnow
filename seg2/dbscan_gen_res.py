@@ -98,7 +98,7 @@ x_train, x_test, y_train, y_test = train_test_split(allX.values, allY.values, te
 print("====> Split finished...")
 
 feat_labels = allX.columns[0:]
-forest = RandomForestClassifier(n_estimators=10000, random_state=SEED, n_jobs=-1, verbose=2)
+forest = RandomForestClassifier(n_estimators=1000, random_state=SEED, n_jobs=-1, verbose=2)
 print("====> Training begin...")
 # forest.fit(x_train, y_train)
 print("====> Training Finished...")
@@ -111,7 +111,7 @@ for f in range(x_train.shape[1]):
     print("%2d) %-*s %f" % (f + 1, 30, feat_labels[indices[f]], importances[indices[f]]))
 
 
-threshold = 0.15
+threshold = 0.003193
 x_selected = x_train[:, importances > threshold]
 print(x_selected.shape)
 
