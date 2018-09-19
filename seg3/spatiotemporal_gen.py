@@ -33,7 +33,15 @@ def plot_my_map(year: int, month: int):
     map = Map("%d年%2d月恐怖袭击频次分布图" % (year, month), width=1200, height=600)
     map.add("", attr, value, maptype="world", is_visualmap=True, visual_text_color='#000')
 
-    map.render(path='./../data/seg3/%d_%2d_terr_freq_overall.html' % (year, month))
+    map.render(path='./../data/seg3/%d_%d_terr_freq_overall.html' % (year, month))
+
+
+_years = n['iyear'].unique()
+_month = n['imonth'].unique()
+
+for i in _years:
+    for j in _month:
+        plot_my_map(i, j)
 
 # _geo = df_tar[['eventid', 'latitude', 'longitude']].values
 # _data = df_tar[['eventid', 'CLUSTER_SCORE']].values
